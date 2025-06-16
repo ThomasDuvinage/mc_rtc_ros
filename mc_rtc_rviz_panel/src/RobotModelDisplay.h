@@ -28,5 +28,6 @@ protected:
   QHBoxLayout * layout_;
   QLabel * label_;
   Display * robot_model_display = nullptr;
+  Display * real_robot_model_display = nullptr;
 };
 } // namespace mc_rtc_rviz

@@ -28,17 +28,24 @@ RobotModelDisplay::RobotModelDisplay(const ClientWidgetParam & param,
   }
 
   robot_model_display = displayGroup()->createDisplay(display_class_id.c_str());
+  real_robot_model_display = displayGroup()->createDisplay(display_class_id.c_str());
 
   robot_model_display->initialize(displayContext());
   displayGroup()->addChild(robot_model_display);
   robot_model_display->setEnabled(true);
+
+  real_robot_model_display->initialize(displayContext());
+  displayGroup()->addChild(real_robot_model_display);
+  real_robot_model_display->setEnabled(true);
 }
 
 RobotModelDisplay::~RobotModelDisplay()
 {
+  displayGroup()->takeDisplay(real_robot_model_display);
   displayGroup()->takeDisplay(robot_model_display);
   displayGroup()->reset();
   delete robot_model_display;
+  delete real_robot_model_display;
 }
 
 void RobotModelDisplay::update(const std::string & robot_name)
@@ -47,10 +54,14 @@ void RobotModelDisplay::update(const std::string & robot_name)
   label_->setText(params.c_str());
 
   robot_model_display->setName(robot_name.c_str());
-
   robot_model_display->subProp(description_prop.c_str())
       ->setValue(("/control/" + name() + "/robot_description").c_str());
   robot_model_display->subProp("TF Prefix")->setValue(("control/" + name()).c_str());
+
+  real_robot_model_display->setName(("Real-" + robot_name).c_str());
+  real_robot_model_display->subProp(description_prop.c_str())
+      ->setValue(("/real/" + name() + "/robot_description").c_str());
+  real_robot_model_display->subProp("TF Prefix")->setValue(("real/" + name()).c_str());
 }
 
 } // namespace mc_rtc_rviz
